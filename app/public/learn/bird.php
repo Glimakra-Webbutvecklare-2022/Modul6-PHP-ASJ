@@ -67,11 +67,23 @@ $rows = $result->fetchAll();
 
     <h1><?= $title ?></h1>
 
+
+    <!-- om användaren inte är inloggad ska inte formuläret visas -->
+
+    <?php
+
+    if (isset($_SESSION['user_id'])) {
+
+    ?>
+
     <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
 
         <p>
             <label for="bird_name">Fågel:</label>
             <input type="text" name="bird_name" id="bird_name" required minlength="2" maxlength="25">
+
+            <!-- för att koppla en användare till tabellen används ett dolt fält med användarens id -->
+            <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
         </p>
 
         <p>
@@ -81,6 +93,11 @@ $rows = $result->fetchAll();
 
     </form>
 
+    <?php
+
+    }
+
+    ?>
 
     <section>
 
@@ -90,9 +107,13 @@ $rows = $result->fetchAll();
             $id = $row['id'];
             echo "<div>";
             // echo "<a href=\"bird_edit.php?id=$id\">";
-            echo '<a href="bird_edit.php?id='. $row['id'] .'">';
+            if (isset($_SESSION['user_id'])) {
+                echo '<a href="bird_edit.php?id='. $row['id'] .'">';
+            }
             echo $row['bird_name'];
-            echo "</a>";
+            if (isset($_SESSION['user_id'])) {
+                echo "</a>";
+            }
             echo "</div>";
         }
 

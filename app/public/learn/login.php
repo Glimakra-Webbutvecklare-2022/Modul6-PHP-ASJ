@@ -16,6 +16,13 @@
     <title>Login</title>
 </head>
 <body>
+
+    <?php
+
+    include "_includes/header.php";
+
+    ?>
+
     <h1>Login</h1>
     <form action="" method="post">
         <label for="username">Username: </label>
