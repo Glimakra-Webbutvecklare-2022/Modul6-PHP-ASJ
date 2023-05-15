@@ -1,9 +1,14 @@
 <?php
-
 declare(strict_types=1);
+
+// se till att sessioner används på sidan
+session_start();
 
 include "_includes/global-functions.php";
 include "_includes/database-connection.php";
+
+// setup table bird
+setup_bird($pdo);
 
 $title = "Fågelskådning";
 

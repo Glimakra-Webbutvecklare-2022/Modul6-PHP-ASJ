@@ -1,5 +1,9 @@
 <?php
 
+// se till att sessioner används på sidan
+// session_start();
+
+
 // en variabel i php inleds med dollartecken
 $title = "En webbsida med PHP";
 

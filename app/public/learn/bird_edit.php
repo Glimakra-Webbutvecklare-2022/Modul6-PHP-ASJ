@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+// se till att sessioner används på sidan
+session_start();
+
+
 include "_includes/global-functions.php";
 include "_includes/database-connection.php";
 
