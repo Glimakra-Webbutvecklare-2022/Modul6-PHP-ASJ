@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     print_r2($_POST);
 
     $bird_name = trim($_POST['bird_name']);
-    $id = isset($_POST['id']) ? $_POST['id'] : 0;
+    $bird_id = isset($_POST['bird_id']) ? $_POST['bird_id'] : 0;
+    $user_id = $_SESSION['user_id'];
 
     // kontrollera om det finns ett fält med delete som name attribut
     // finns fältet aktivt - dvs ngn klickat på knappen - radera posten
@@ -34,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if ($action_delete) {
 
         // sql syntax för att radera en post i en tabell
-        $sql = "DELETE FROM bird WHERE id=$id";
+        $sql = "DELETE FROM bird WHERE bird_id=$bird_id";
 
         // använd databaskopplingen för att radera posten i tabellen
         $result = $pdo->exec($sql);
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if (strlen($bird_name) >= 2) {
 
         // spara till databasen
-        $sql = "UPDATE `bird` SET `bird_name` = '$bird_name' WHERE `bird`.`id` = $id";
+        $sql = "UPDATE `bird` SET `bird_name` = '$bird_name', user_id = $user_id WHERE bird_id = $bird_id";
 
         print_r2($sql);
 
@@ -74,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
     $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
     // visa eventuella fåglar som finns i tabellen
-    $sql = "SELECT * FROM bird WHERE id=$id";
+    $sql = "SELECT * FROM bird WHERE bird_id=$id";
 
     // använd databaskopplingen för att hämta data
     $result = $pdo->prepare($sql);
@@ -125,7 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
                 <label for="bird_name">Fågel:</label>
                 <input type="text" name="bird_name" id="bird_name" value="<?= $bird_name ?>" required minlength="2" maxlength="25">
                 <!-- skicka med fågelns id som finns sparad i databasen - använd ett dolt input fält -->
-                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="bird_id" value="<?= $row['bird_id'] ?>">
+                <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
             </p>
 
             <p>

@@ -268,3 +268,55 @@ try {
 ```
 
 Instruktionen kan sparas som en fil som inkluderas i applikationen.
+
+---
+
+## Register, Login, Sessions, Relations ...
+
+Tabeller kan skapas i MySQL via syntax i stil med:
+
+```php
+"CREATE TABLE IF NOT EXISTS ...."
+```
+
+Därmed kan man i en applikation skapa funktioanlitet för att sätta upp tabellers struktur och innehåll. Tänk på att för tabeller som är relaterade till varandra - med främmande nycklar - ska först tabellen som inte har en främmande nyckel först skapas, innan tabellen med relationen läggs till. I exemplet finns två tabeller - *user* och *bird*. Tabellen *bird* använder ett fält som har en främmande nyckel: *user_id*. Se koden nedan som skapar tabellerna. Se till att funktionen `setup_user` **körs innan** funktionen `setup_bird`.
+
+```php
+
+// funktion för att skapa tabellen bird
+function setup_bird($pdo)
+{
+    $sql = "CREATE TABLE IF NOT EXISTS `bird` (
+        `bird_id` int(11) NOT NULL AUTO_INCREMENT,
+        `bird_name` varchar(25) NOT NULL,
+        `user_id` int(11) NOT NULL,
+        PRIMARY KEY (`bird_id`),
+        KEY `user_id` (`user_id`),
+        CONSTRAINT `bird_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+       ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+
+       $pdo->exec($sql);
+}
+
+// funktion för att skapa tabellen user
+function setup_user($pdo)
+{
+    $sql = "CREATE TABLE IF NOT EXISTS `user` (
+        `user_id` int(11) NOT NULL AUTO_INCREMENT,
+        `username` varchar(20) NOT NULL,
+        `password` varchar(255) NOT NULL,
+        PRIMARY KEY (`user_id`)
+       ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+
+       $pdo->exec($sql);
+}
+
+```
+
+I en relationsdatabas kan data hämtas från mer än en tabell - exempelvis i en SELECT JOIN. I koden nedan matchas fältet `user_id` som finns som en primär nyckel i tabellen `user`, relaterat till ett fält i tabellen `bird` - som en främmande nyckel, eller som en logisk koppling.
+
+```php
+$sql = "SELECT bird.bird_name, bird.bird_id, user.username FROM bird JOIN user ON bird.user_id = user.user_id";
+```
+
+Med främmande nycklar kan vissa åtgärde kopplas då det handlar om SQL `UPDATE` och `DELETE`. I det här exemplet har jag kodat att det inte sker ngn åtgärd - `ON DELETE NO ACTION ON UPDATE NO ACTION`.

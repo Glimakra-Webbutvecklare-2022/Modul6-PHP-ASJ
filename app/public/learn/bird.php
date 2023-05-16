@@ -24,12 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     print_r2($_POST);
 
     $bird_name = trim($_POST['bird_name']);
+    $user_id = trim($_POST['user_id']);
 
     // kontrollera att minst 2 tecken finns i fältet för bird_name
     if (strlen($bird_name) >= 2) {
 
         // spara till databasen
-        $sql = "INSERT INTO bird (bird_name) VALUES ('$bird_name')";
+        $sql = "INSERT INTO bird (bird_name, user_id) VALUES ('$bird_name', $user_id)";
 
         print_r2($sql);
 
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 }
 
 // visa eventuella fåglar som finns i tabellen
-$sql = "SELECT * FROM bird";
+$sql = "SELECT bird.bird_name, bird.bird_id, user.username FROM bird JOIN user ON bird.user_id = user.user_id";
 
 // använd databaskopplingen för att hämta data
 $result = $pdo->prepare($sql);
@@ -104,13 +105,14 @@ $rows = $result->fetchAll();
         <?php
 
         foreach ($rows as $row) {
-            $id = $row['id'];
+            $id = $row['bird_id'];
             echo "<div>";
             // echo "<a href=\"bird_edit.php?id=$id\">";
             if (isset($_SESSION['user_id'])) {
-                echo '<a href="bird_edit.php?id='. $row['id'] .'">';
+                echo '<a href="bird_edit.php?id='. $row['bird_id'] .'">';
             }
-            echo $row['bird_name'];
+            echo $row['bird_name'] . ", " . $row['username'];
+
             if (isset($_SESSION['user_id'])) {
                 echo "</a>";
             }

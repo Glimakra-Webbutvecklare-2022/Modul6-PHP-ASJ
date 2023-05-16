@@ -7,5 +7,6 @@
     <a href="bird.php">Fåglar</a> | 
     <a href="login.php">Logga in</a> | 
     <a href="logout.php">Logga ut</a> | 
+    <a href="register.php">Registrera</a> | 
 </nav>
 <hr>
